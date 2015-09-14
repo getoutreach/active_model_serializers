@@ -54,7 +54,9 @@ module ActiveModel
         end
 
         def serializer_class(object)
-          serializer_from_options || serializer_from_object(object) || default_serializer
+          # If we set the serializer attribute, only serialize if the object exists. This is the behavior
+          # if you have a nil object and don't set the serializer attribute -- it just chooses the DefaultSerializer
+          (object ? serializer_from_options : nil) || serializer_from_object(object) || default_serializer
         end
 
         def build_serializer(object, options = {})
